@@ -1,0 +1,3 @@
+cargo:rerun-if-changed=build/main.rs
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=/home/bmorkai/wba/capstone/cw-staking-angel/target/debug/build/typenum-2e9c4606bc59b89d/out/consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=/home/bmorkai/wba/capstone/cw-staking-angel/target/debug/build/typenum-2e9c4606bc59b89d/out/op.rs

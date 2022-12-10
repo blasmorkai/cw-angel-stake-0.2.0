@@ -1,0 +1,12 @@
+/home/bmorkai/wba/capstone/cw-staking-angel/target/debug/deps/signature-e8818d071323086c.rmeta: /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/lib.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/hazmat.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/error.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/keypair.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/signature.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/signer.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/verifier.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/../README.md
+
+/home/bmorkai/wba/capstone/cw-staking-angel/target/debug/deps/signature-e8818d071323086c.d: /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/lib.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/hazmat.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/error.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/keypair.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/signature.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/signer.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/verifier.rs /home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/../README.md
+
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/lib.rs:
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/hazmat.rs:
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/error.rs:
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/keypair.rs:
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/signature.rs:
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/signer.rs:
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/verifier.rs:
+/home/bmorkai/.cargo/registry/src/github.com-1ecc6299db9ec823/signature-1.6.4/src/../README.md:
