@@ -30,6 +30,8 @@ impl Metadata {
 }
 
 // In the cw721, the MintMsg<Option<Metadata>>, hence this option for the Extension
+// ExecuteMsg::Mint requires Option<Metadata>  --> Defined by cw721
+// ExecuteMsg::UpdateMetadata requires Metadata  (Not Option)
 pub type Extension = Option<Metadata>;
 
 // If we use cw721-base and cw721 version 0.16.0 Cw721Contract will ask for two more parameters. TODO!!!
@@ -47,7 +49,6 @@ pub mod entry {
     use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
     use cw721::Cw721Execute;
 
-    // This makes a conscious choice on the various generics used by the contract
     #[entry_point]
     pub fn instantiate(
         mut deps: DepsMut,
