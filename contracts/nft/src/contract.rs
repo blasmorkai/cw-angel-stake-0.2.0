@@ -22,11 +22,11 @@ pub struct Metadata {
     pub cw20: Option<Vec<Cw20>>,
 }
 
-impl Metadata {
-    pub fn has_native_or_cw20(&self) -> bool {
-        self.native.is_some() || self.cw20.is_some()
-    }
-}
+// impl Metadata {
+//     pub fn has_native_or_cw20(&self) -> bool {
+//         self.native.is_some() || self.cw20.is_some()
+//     }
+// }
 
 pub type Extension = Metadata;      
                                    
@@ -77,7 +77,7 @@ pub mod entry {
     pub fn query(
         deps: Deps, 
         env: Env, 
-        msg: QueryMsg<Empty>
+        msg: QueryMsg               //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<QueryMsg<Q?>
     ) -> StdResult<Binary> {
         let tract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
         cw721_base::Cw721Contract::query(&tract, deps, env, msg.into())
