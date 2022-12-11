@@ -1,7 +1,6 @@
 use cw721_base::MintMsg;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use cosmwasm_std::Binary;
 
 use crate::contract::Metadata;
 
@@ -16,11 +15,4 @@ pub enum ExecuteMsg<T> {
     Burn { token_id: String },
     /// Transfer is a base message to move a token to another account without triggering actions
     TransferNft { recipient: String, token_id: String },
-    /// Send is a base message to transfer a token to a contract and trigger an action
-    /// on the receiving contract.
-    SendNft {
-        contract: String,
-        token_id: String,
-        msg: Binary,
-    },
 }
