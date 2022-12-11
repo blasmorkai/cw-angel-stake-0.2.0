@@ -82,67 +82,67 @@ mod tests {
     //     },
     // };
 
-    fn get_owner_of(app: &App, nft_contract: &NftContract, token_id: String) -> OwnerOfResponse {
-        app.wrap()
-            .query_wasm_smart(
-                nft_contract.addr(),
-                &crate::contract::QueryMsg::OwnerOf {
-                    token_id,
-                    include_expired: None,
-                },
-            )
-            .unwrap()
-    }
+    // fn get_owner_of(app: &App, nft_contract: &NftContract, token_id: String) -> OwnerOfResponse {
+    //     app.wrap()
+    //         .query_wasm_smart(
+    //             nft_contract.addr(),
+    //             &crate::contract::QueryMsg::OwnerOf {
+    //                 token_id,
+    //                 include_expired: None,
+    //             },
+    //         )
+    //         .unwrap()
+    // }
 
-    // Only MINTER can mint.
-    fn mint_nft(app: &mut App, cw721_contract: &NftContract, token_id: String, token_uri: Option<String>, owner: String, extension:Metadata) -> () {
-        let mint_msg = cw721_base::MintMsg {
-            token_id,
-            owner,
-            token_uri,
-            extension,
-        };
-        let msg = crate::contract::Cw721ExecuteMsg::Mint(mint_msg);
-        let cosmos_msg = cw721_contract.call(msg).unwrap();
-        app.execute(Addr::unchecked(MINTER), cosmos_msg).unwrap();
-    }
+    // // Only MINTER can mint.
+    // fn mint_nft(app: &mut App, cw721_contract: &NftContract, token_id: String, token_uri: Option<String>, owner: String, extension:Metadata) -> () {
+    //     let mint_msg = cw721_base::MintMsg {
+    //         token_id,
+    //         owner,
+    //         token_uri,
+    //         extension,
+    //     };
+    //     let msg = crate::contract::Cw721ExecuteMsg::Mint(mint_msg);
+    //     let cosmos_msg = cw721_contract.call(msg).unwrap();
+    //     app.execute(Addr::unchecked(MINTER), cosmos_msg).unwrap();
+    // }
 
-    #[test]
-    fn instantiate_mint_nft() {
-        let (mut app, code_id_cw721) = store_code();
-        let nft_contract = cw721_instantiate(
-            &mut app,
-            code_id_cw721,
-            "Greeks".to_string(),
-            "draghma".to_string(),
-            MINTER.to_string(),
-        );
+    // #[test]
+    // fn instantiate_mint_nft() {
+    //     let (mut app, code_id_cw721) = store_code();
+    //     let nft_contract = cw721_instantiate(
+    //         &mut app,
+    //         code_id_cw721,
+    //         "Greeks".to_string(),
+    //         "draghma".to_string(),
+    //         MINTER.to_string(),
+    //     );
 
-        let metadata = Metadata{ 
-            native: Some(coins(1000, NATIVE_DENOM)), 
-            cw20: None };
-        //mint a new NFT with token_id "0"
-        mint_nft(
-            &mut app,
-            &nft_contract,
-            TOKEN_ID.to_string(),
-            Some("url".to_string()),
-            USER1.to_string(),
-            metadata,
-        );
+    //     let metadata = Metadata{ 
+    //         native: Some(coins(1000, NATIVE_DENOM)), 
+    //         cw20: None };
+    //     //mint a new NFT with token_id "0"
+    //     mint_nft(
+    //         &mut app,
+    //         &nft_contract,
+    //         TOKEN_ID.to_string(),
+    //         Some("url".to_string()),
+    //         USER1.to_string(),
+    //         metadata,
+    //     );
 
-         //get owner of NFT with token_id "0"
-        let owner = get_owner_of(&app, &nft_contract, TOKEN_ID.to_string());
-        assert_eq!(owner.owner, USER1.to_string());
+    //      //get owner of NFT with token_id "0"
+    //     let owner = get_owner_of(&app, &nft_contract, TOKEN_ID.to_string());
+    //     assert_eq!(owner.owner, USER1.to_string());
 
-        let new_metadata = Metadata{ 
-            native: Some(coins(2000, NATIVE_DENOM)), 
-            cw20: None };
+    //     let new_metadata = Metadata{ 
+    //         native: Some(coins(2000, NATIVE_DENOM)), 
+    //         cw20: None };
             
-        // let msg:ExecuteMsg<Metadata> = crate::msg::ExecuteMsg::UpdateMetadata { token_id: TOKEN_ID.to_string(), token_uri: "url2".to_string(), metadata: new_metadata };
-        // let cosmos_msg = nft_contract.call(msg).unwrap();
-        // app.execute(Addr::unchecked(MINTER), cosmos_msg).unwrap();        
+    //     // let msg:ExecuteMsg<Metadata> = crate::msg::ExecuteMsg::UpdateMetadata { token_id: TOKEN_ID.to_string(), token_uri: "url2".to_string(), metadata: new_metadata };
+    //     // let cosmos_msg = nft_contract.call(msg).unwrap();
+    //     // app.execute(Addr::unchecked(MINTER), cosmos_msg).unwrap();        
 
-    }
+    // }
 
 }

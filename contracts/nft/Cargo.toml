@@ -38,6 +38,8 @@ cw-storage-plus   = { workspace = true }
 schemars          = { workspace = true }
 serde             = { workspace = true }
 thiserror         = { workspace = true }
+cosmwasm-schema   = { workspace = true }
+
 
 
 [dev-dependencies]

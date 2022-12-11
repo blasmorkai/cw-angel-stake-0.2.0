@@ -16,7 +16,6 @@ pub struct Cw20 {
     pub amount: Uint128,
 }
 
-
 #[derive(Serialize, Deserialize, Clone, PartialEq, JsonSchema, Debug, Default)]
 pub struct Metadata {
     pub native: Option<Vec<Coin>>,    
@@ -31,70 +30,57 @@ impl Metadata {
 
 pub type Extension = Metadata;      
                                    
-
-// TODO!! If we use cw721-base and cw721 version 0.16.0 Cw721Contract will ask for two more parameters. TODO!!!
-pub type Cw721MetadataContract<'a> = cw721_base::Cw721Contract<'a, Extension, Empty>;
-pub type Cw721ExecuteMsg = cw721_base::ExecuteMsg<Extension>;
-pub type QueryMsg = cw721_base::QueryMsg;
-pub type Cw721LiteExecuteMsg = crate::msg::ExecuteMsg<Extension>;
-
-#[cfg(not(feature = "library"))]
 pub mod entry {
-    use crate::msg::ExecuteMsg;
+    use crate::msg::{ExecuteMsg, QueryMsg};
 
     use super::*;
 
-    use cosmwasm_std::entry_point;
-    use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult};
-    use cw721::Cw721Execute;
+    use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult, entry_point};
 
-    #[entry_point]
+    #[cfg_attr(not(feature = "library"), entry_point)]
     pub fn instantiate(
         mut deps: DepsMut,
         env: Env,
         info: MessageInfo,
         msg: InstantiateMsg,
     ) -> Result<Response, ContractError> {
-        let res = Cw721MetadataContract::default().instantiate(deps.branch(), env, info, msg)?;
+        let contract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
+        let res = cw721_base::Cw721Contract::instantiate(&contract, deps.branch(), env, info, msg)?;
+
         // Explicitly set contract name and version, otherwise set to cw721-base info
         set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)
             .map_err(ContractError::Std)?;
         Ok(res)
     }
 
-    #[entry_point]
+   // use cw721_base::entry::execute as _execute;  // _execute(deps, env, info, msg.into()), Does not work, problems with msg.into()
+
+    #[cfg_attr(not(feature = "library"), entry_point)]
     pub fn execute(
         deps: DepsMut,
         env: Env,
         info: MessageInfo,
         msg: ExecuteMsg<Metadata>,
     ) -> Result<Response, ContractError> {
-       // Cw721MetadataContract::default().execute(deps, env, info, msg)
+       let contract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
        match msg {
-            ExecuteMsg::Mint(mint_msg) => {
-                Cw721MetadataContract::default().mint(deps, env, info, mint_msg)
-            }
             ExecuteMsg::UpdateMetadata {
                 token_id,
                 token_uri,
                 metadata,
             } => execute_update_metadata(deps, env, info, token_id, token_uri, metadata),
-            ExecuteMsg::Burn{token_id} => {
-                Cw721MetadataContract::default().burn(deps, env, info, token_id)
-            },
-            ExecuteMsg::TransferNft { recipient, token_id } => {
-                Cw721MetadataContract::default().transfer_nft(deps, env, info, recipient, token_id)
-            },
+            _ => cw721_base::Cw721Contract::execute(&contract, deps, env, info, msg.into()),
         }
     }
 
-    #[entry_point]
-    pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
-        Cw721MetadataContract::default().query(deps, env, msg)
-        // Query that returns metadata?????    <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        // Cw721QueryMsg::NftInfo { token_id: String }  
-                //  #[returns(cw721::NftInfoResponse<Q>)] 
-                //    struct NftInfoResponse<T> {token_uri: Option<String>, extension: T,}
+    #[cfg_attr(not(feature = "library"), entry_point)]
+    pub fn query(
+        deps: Deps, 
+        env: Env, 
+        msg: QueryMsg<Empty>
+    ) -> StdResult<Binary> {
+        let tract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
+        cw721_base::Cw721Contract::query(&tract, deps, env, msg.into())
     }
 
     fn execute_update_metadata(
@@ -105,7 +91,7 @@ pub mod entry {
         token_uri: String,
         metadata: Metadata
     ) -> Result<Response, ContractError> {
-        let contract = Cw721MetadataContract::default();
+        let contract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
         let minter = contract.minter.load(deps.storage)?;
         if info.sender != minter {
             Err(ContractError::Unauthorized {})
@@ -123,23 +109,20 @@ pub mod entry {
             Ok(Response::new())
         }
     }
-
-
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    use cosmwasm_std::{testing::{mock_dependencies, mock_env, mock_info}, coins};
-    use cw721::Cw721Query;
-
+    use cosmwasm_std::{testing::{mock_dependencies, mock_env, mock_info}, coins, from_binary};
+    use cw721::NftInfoResponse;
     const CREATOR: &str = "creator";
 
     #[test]
-    fn use_metadata_extension() {
+    fn mint() {
         let mut deps = mock_dependencies();
-        let contract = Cw721MetadataContract::default();
+        //let contract: Cw721Contract<Extension, Empty> = cw721_base::Cw721Contract::default();
 
         let info = mock_info(CREATOR, &[]);
         let init_msg = InstantiateMsg {
@@ -147,11 +130,10 @@ mod tests {
             symbol: "drachma".to_string(),
             minter: CREATOR.to_string(),
         };
-        contract
-            .instantiate(deps.as_mut(), mock_env(), info.clone(), init_msg)
-            .unwrap();
+        entry::instantiate(deps.as_mut(), mock_env(), info.clone(), init_msg).unwrap();
 
         let token_id = "1";
+        let token_uri = "json";
         let mint_msg = MintMsg {
             token_id: token_id.to_string(),
             owner: "bob".to_string(),
@@ -161,20 +143,21 @@ mod tests {
                 cw20: None,
             },
         };
-        let exec_msg = Cw721ExecuteMsg::Mint(mint_msg.clone());
-        contract
-            .execute(deps.as_mut(), mock_env(), info, exec_msg)
-            .unwrap();
 
-        let res = contract.nft_info(deps.as_ref(), token_id.into()).unwrap();
+        let exec_msg = crate::msg::ExecuteMsg::Mint(mint_msg.clone());
+        entry::execute(deps.as_mut(), mock_env(), info.clone(), exec_msg.into()).unwrap();
+
+        let query_msg = crate::msg::QueryMsg::NftInfo { token_id: token_id.to_string() };
+        let res : NftInfoResponse<Metadata> = from_binary(&entry::query(deps.as_ref(), mock_env(), query_msg).unwrap()).unwrap();
         assert_eq!(res.token_uri, mint_msg.token_uri);
         assert_eq!(res.extension, mint_msg.extension);
+
     }
 
     #[test]
-    fn update_metadata() {
+    fn mint_update_metadata() {
         let mut deps = mock_dependencies();
-        let contract = Cw721MetadataContract::default();
+        //let contract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
 
         let info = mock_info(CREATOR, &[]);
         let init_msg = InstantiateMsg {
@@ -182,39 +165,46 @@ mod tests {
             symbol: "drachma".to_string(),
             minter: CREATOR.to_string(),
         };
-        contract
-            .instantiate(deps.as_mut(), mock_env(), info.clone(), init_msg)
-            .unwrap();
+        entry::instantiate(deps.as_mut(), mock_env(), info.clone(), init_msg).unwrap();
 
         let token_id = "1";
+        let token_uri = "json";
         let mint_msg = MintMsg {
             token_id: token_id.to_string(),
             owner: "bob".to_string(),
             token_uri: None,
             extension: Metadata {
-                native: Some(coins(1000, "mars")),
+                native: Some(coins(1000, "earth")),
                 cw20: None,
             },
         };
-        let exec_msg = Cw721ExecuteMsg::Mint(mint_msg.clone());
-        contract
-            .execute(deps.as_mut(), mock_env(), info, exec_msg)
-            .unwrap();
 
-        // Update Metadata
-        let new_metadata = Metadata {
-            native: Some(coins(2000, "mars")),
+        let exec_msg = crate::msg::ExecuteMsg::Mint(mint_msg.clone());
+        entry::execute(deps.as_mut(), mock_env(), info.clone(), exec_msg.into()).unwrap();
+
+
+        let old_metadata = Metadata {
+            native: Some(coins(1000, "earth")),
             cw20: None,
         };
 
-        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< How can I reference Cw721ExecuteMsg::UpdateMetadata ????
- 
-        // let exec_msg = 
-        //  { token_id: "1".to_string(), token_uri: "".to_string(), metadata: new_metadata };
-        // contract
-        //     .execute(deps.as_mut(), mock_env(), info, exec_msg)
-        //     .unwrap();
+        let new_metadata = Metadata {
+            native: Some(coins(2000, "earth")),
+            cw20: None,
+        };
 
+        let exec_msg = crate::msg::ExecuteMsg::UpdateMetadata { 
+            token_id: token_id.to_string(), 
+            token_uri: token_uri.to_string(), 
+            metadata: new_metadata.clone() 
+        };
+
+        entry::execute(deps.as_mut(), mock_env(), info, exec_msg.into()).unwrap();
+
+        let query_msg = crate::msg::QueryMsg::NftInfo { token_id: token_id.to_string() };
+        let res : NftInfoResponse<Metadata> = from_binary(&entry::query(deps.as_ref(), mock_env(), query_msg).unwrap()).unwrap();
+        assert_eq!(res.token_uri, Some(token_uri.to_string()));
+        assert_eq!(res.extension, new_metadata);
 
     }
 
