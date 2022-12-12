@@ -23,42 +23,42 @@ pub enum ExecuteMsg<T> {
     SendNft {contract: String,token_id: String,msg: Binary,},    
 }
 
-//#[cw_serde]
-//#[derive(QueryResponses)]
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-#[serde(rename_all = "snake_case")]
-pub enum QueryMsg {             // Or QueryMsg<Q: JsonSchema>  //2) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+#[cw_serde]
+#[derive(QueryResponses)]
+// #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+// #[serde(rename_all = "snake_case")]
+pub enum QueryMsg<Q> {             // Or QueryMsg<Q: JsonSchema>  //1) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     /// Return the owner of the given token, error if token does not exist
-//    #[returns(cw721::OwnerOfResponse)]
+   #[returns(cw721::OwnerOfResponse)]
     OwnerOf {
         token_id: String,
         include_expired: Option<bool>,
     },
     /// Total number of tokens issued
-//    #[returns(cw721::NumTokensResponse)]
+   #[returns(cw721::NumTokensResponse)]
     NumTokens {},
     /// With MetaData Extension.
     /// Returns top-level metadata about the contract
-//    #[returns(cw721::ContractInfoResponse)]
+   #[returns(cw721::ContractInfoResponse)]
     ContractInfo {},
     /// With MetaData Extension.
     /// Returns metadata about one particular token, based on *ERC721 Metadata JSON Schema*
     /// but directly from the contract    
-//    #[returns(cw721::NftInfoResponse<Q>)]               //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   #[returns(cw721::NftInfoResponse<Q>)]               //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     NftInfo {
         token_id: String,
     },
     /// With MetaData Extension.
     /// Returns the result of both `NftInfo` and `OwnerOf` as one query as an optimization
     /// for clients    
- //   #[returns(cw721::AllNftInfoResponse<Q>)]            //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+   #[returns(cw721::AllNftInfoResponse<Q>)]            //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     AllNftInfo {
         token_id: String,
         include_expired: Option<bool>,
     },
     /// With Enumerable extension.
     /// Returns all tokens owned by the given address, [] if unset.
-//    #[returns(cw721::TokensResponse)]    
+   #[returns(cw721::TokensResponse)]    
     Tokens {
         owner: String,
         start_after: Option<String>,
@@ -66,16 +66,16 @@ pub enum QueryMsg {             // Or QueryMsg<Q: JsonSchema>  //2) <<<<<<<<<<<<
     },
     /// With Enumerable extension.
     /// Requires pagination. Lists all token_ids controlled by the contract.
-//    #[returns(cw721::TokensResponse)]
+   #[returns(cw721::TokensResponse)]
     AllTokens {
         start_after: Option<String>,
         limit: Option<u32>,
     },
     /// Return the minter
-//    #[returns(MinterResponse)]
+   #[returns(MinterResponse)]
     Minter {},
     /// Extension query
-//    #[returns(())]
+   #[returns(())]
     CollectionInfo {},
 }
 
@@ -108,9 +108,9 @@ impl<T> From<ExecuteMsg<T>> for Cw721ExecuteMsg<T,Empty>
     }
 }
 
-impl From<QueryMsg> for Cw721QueryMsg<Empty>                         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+impl From<QueryMsg<Empty>> for Cw721QueryMsg<Empty>                         //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 {                       
-    fn from(msg: QueryMsg) -> Cw721QueryMsg<Empty> {                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    fn from(msg: QueryMsg<Empty>) -> Cw721QueryMsg<Empty> {                 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         match msg {
             QueryMsg::OwnerOf {
                 token_id,

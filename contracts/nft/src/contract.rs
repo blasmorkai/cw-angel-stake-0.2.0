@@ -77,7 +77,7 @@ pub mod entry {
     pub fn query(
         deps: Deps, 
         env: Env, 
-        msg: QueryMsg               //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<QueryMsg<Q?>
+        msg: QueryMsg<Empty>               //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<QueryMsg<Q?>
     ) -> StdResult<Binary> {
         let tract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
         cw721_base::Cw721Contract::query(&tract, deps, env, msg.into())
