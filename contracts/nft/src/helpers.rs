@@ -28,15 +28,15 @@ impl NftContract {
         self.0.clone()
     }
 
-    pub fn call<T: Into<ExecuteMsg<T>>>(&self, msg: T) -> StdResult<CosmosMsg> {
-        let msg = to_binary(&msg.into())?;              //2) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        Ok(WasmMsg::Execute {
-            contract_addr: self.addr().into(),
-            msg,
-            funds: vec![],
-        }
-        .into())
-    }
+    // pub fn call<T: Into<ExecuteMsg<T>>>(&self, msg: T) -> StdResult<CosmosMsg> {
+    //     let msg = to_binary(&msg.into())?;              //1) <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    //     Ok(WasmMsg::Execute {
+    //         contract_addr: self.addr().into(),
+    //         msg,
+    //         funds: vec![],
+    //     }
+    //     .into())
+    // }
 
 
     /// Get Owner of an NFT

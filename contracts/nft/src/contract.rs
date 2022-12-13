@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use cosmwasm_std::{Empty, Coin, Uint128};
 use cw2::set_contract_version;
-pub use cw721_base::{Cw721Contract, ContractError, InstantiateMsg, MintMsg, MinterResponse};
+pub use cw721_base::{Cw721Contract, ContractError, InstantiateMsg, QueryMsg, ExecuteMsg, MintMsg, MinterResponse};
 
 // Version info for migration
 const CONTRACT_NAME: &str = "crates.io:cw721-angel";
@@ -77,7 +77,7 @@ pub mod entry {
     pub fn query(
         deps: Deps, 
         env: Env, 
-        msg: QueryMsg<Empty>               //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<QueryMsg<Q?>
+        msg: QueryMsg              
     ) -> StdResult<Binary> {
         let tract: Cw721Contract<Extension, Empty, Empty, Empty> = cw721_base::Cw721Contract::default();
         cw721_base::Cw721Contract::query(&tract, deps, env, msg.into())
